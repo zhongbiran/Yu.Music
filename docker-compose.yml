@@ -1,0 +1,65 @@
+# Yu.Music —— 一条命令起全套
+#
+#   docker compose up -d
+#
+# 浏览器打开 http://localhost:5106
+#
+# 端口、密码、NAS 连接都在同目录的 .env 里改(复制 .env.example 成 .env)。
+
+name: yu-music
+
+services:
+  music:
+    image: ghcr.io/zhongbiran/yu-music:latest
+    container_name: yu-music
+    ports:
+      - "${WEB_PORT:-5106}:80"
+    volumes:
+      # 曲库数据库 + 音频缓存。这个目录别删 —— 删了曲库就没了。
+      - ./data:/data
+    environment:
+      # 管理页密码。留空 = 进管理页不用密码(只在自己局域网里用可以这样)。
+      # ⚠️ 暴露到公网前一定要设一个。
+      YU_ADMIN_PASSWORD: "${YU_ADMIN_PASSWORD:-}"
+
+      # ── 让下载的无损文件直接落在群晖上(可选)──
+      # NFS:跟 NAS 同一个局域网时用
+      MEDIA_NFS: "${MEDIA_NFS:-}"
+      # SMB:人在外面也能用(群晖的 QuickConnect 域名解析到它当前的 IPv6)
+      MEDIA_SMB: "${MEDIA_SMB:-}"
+      MEDIA_SMB_USER: "${MEDIA_SMB_USER:-}"
+      MEDIA_SMB_PASS: "${MEDIA_SMB_PASS:-}"
+      # 共享文件夹里真正的缓存目录(CIFS 挂不了子目录,靠 bind mount 映射)
+      MEDIA_SMB_SUBDIR: "${MEDIA_SMB_SUBDIR:-}"
+    # 容器内挂 NAS 需要这些能力
+    cap_add:
+      - SYS_ADMIN
+      - DAC_READ_SEARCH
+      - LINUX_IMMUTABLE
+    networks:
+      - default
+      # NAS 常常只能通过 IPv6 够到,单独给一条开了 IPv6 的网络
+      - nas
+    restart: unless-stopped
+
+  # ── 歌曲宝抓取服务(可选)────────────────────────────────────
+  # 「歌曲宝」整站在 Cloudflare 托管挑战后面,只有真浏览器能过 ——
+  # 这个服务跑一个无头 Chromium 把页面当浏览器读。
+  # 不要这个源的话,整段删掉也不影响别的。
+  #
+  #   fetcher:
+  #     image: ghcr.io/zhongbiran/yu-music:fetcher
+  #     container_name: yu-music-fetcher
+  #     environment:
+  #       GEQUBAO_BASE: "https://www.gequbao.com"
+  #     # Chromium 在容器里要共享内存,不然 /dev/shm 太小会崩
+  #     ipc: host
+  #     restart: unless-stopped
+
+networks:
+  default:
+  nas:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: fd00:dead:beef::/64
