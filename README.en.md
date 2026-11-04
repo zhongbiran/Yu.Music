@@ -39,6 +39,7 @@ docker run -d \
   --name yu-music \
   -p 5106:80 \
   -v yu-music-data:/data \
+  -e YuMusic__Admin__Password='<a password you pick>' \
   --restart unless-stopped \
   ghcr.io/zhongbiran/yu-music:latest
 ```
@@ -47,6 +48,11 @@ Open <http://localhost:5106> and you're in.
 
 > `5106` is the port you chose — change it freely. `-v yu-music-data:/data` is the data volume
 > (library database + audio cache). **Don't lose it** — remove the volume and the library is gone.
+>
+> ⚠️ Inside the container the password variable is `YuMusic__Admin__Password` (.NET's config
+> convention, two underscores). With compose you don't need to care — the compose file above
+> already maps `.env`'s `YU_ADMIN_PASSWORD` onto it. **Leaving it out means the admin page opens
+> without a password** — never do that on a machine reachable from the internet.
 
 ### Option 2: compose (use this if you attach a NAS or share it with others)
 
