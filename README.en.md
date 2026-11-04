@@ -6,6 +6,10 @@ Chinese UI, works in any browser on phone or desktop. Library, covers, lyrics an
 > Five music sources are built in (Migu, hi.cn, indie.cn, NetEase, Gequbao) — it works out of the box.
 > The code and configuration in the image are obfuscated; there is no readable source to dig out.
 
+![Browse](docs/images/browse.jpg)
+
+*Daily picks + curated collections. Each source stands alone — one being down doesn't take the others with it.*
+
 ---
 
 ## Why
@@ -201,6 +205,45 @@ So scraping it needs a separate small container with headless Chromium. It serve
 - **Admin › General** — theme (light/dark), app title, admin password, home-screen notices
 - Bottom player bar — previous / next / autoplay / progress / bitrate; it trims itself on phones
 - One single address (`/admin`) — **the URL never reveals which page you're on**
+
+### Search: every source at once, format and bitrate at a glance
+
+![Search](docs/images/search.jpg)
+
+*Click a result to play it right away; hit "缓存" (cache) on the player bar to keep a copy.*
+
+### Library: what needs doing first, then the track list
+
+![Library](docs/images/library.jpg)
+
+*"Needs attention" and the track list below are the same data — click one up there and its row lights up down here.*
+
+### Sources: swap them without writing code
+
+![Sources](docs/images/sources.jpg)
+
+*Address, platform and extra parameters are all editable on the page. Saving takes effect immediately — no restart.*
+
+### How to read the status (legend)
+
+| Marker | Meaning |
+|---|---|
+| 🟢 green dot | Ready — cached to the NAS (or locally), playable |
+| ⚪ grey dot | Nothing to do — not cached yet, but nothing is wrong |
+| 🔴 red dot | Something failed — the download or sync broke; click it for the reason |
+| Bar on the left of a track row | This one needs you (pending sync / not imported / failed cache) |
+
+> Colours only carry *status*, never *good or bad*. "Needs you" is signalled by position (the bar on the left), not by hue — so it still works if you can't tell the colours apart.
+
+### Now playing: everything in one drawer
+
+![Now playing](docs/images/nowplaying.jpg)
+
+### And on a phone
+
+![Mobile](docs/images/mobile.jpg)
+
+*Same address. The layout switches to a narrow view and the player bar keeps only what matters.*
 
 ---
 
