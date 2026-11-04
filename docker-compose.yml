@@ -20,7 +20,7 @@ services:
     environment:
       # 管理页密码。留空 = 进管理页不用密码(只在自己局域网里用可以这样)。
       # ⚠️ 暴露到公网前一定要设一个。
-      YU_ADMIN_PASSWORD: "${YU_ADMIN_PASSWORD:-}"
+      YuMusic__Admin__Password: "${YU_ADMIN_PASSWORD:-}"
 
       # ── 让下载的无损文件直接落在群晖上(可选)──
       # NFS:跟 NAS 同一个局域网时用
